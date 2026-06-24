@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>KidRising Platform 🌍 — The Internet, Rebuilt for Kids</title>
+<style>
+:root{--bg:#03020a;--gold:#ffcc00;--red:#ff2244;--purple:#bb33ff;--green:#00ffaa;--blue:#2255ff;--panel:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.07);--txt:#fff;--txt2:#aaaabb;--fs:1rem;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;overflow-x:hidden;font-size:var(--fs);}
+
+/* ACCESSIBILITY */
+body.hc{--bg:#000;--panel:rgba(255,255,0,0.08);--border:rgba(255,255,0,0.3);--txt:#ffff00;--txt2:#ffffff;}
+body.large{--fs:1.25rem;}
+body.xlarge{--fs:1.5rem;}
+body.reduced *{animation:none!important;transition:none!important;}
+
+/* ACCESS BAR */
+#access-bar{background:rgba(0,0,0,0.9);border-bottom:2px solid var(--gold);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:100;}
+#access-bar span{font-size:0.7rem;letter-spacing:3px;color:var(--gold);margin-right:4px;}
+.ab-btn{background:rgba(255,204,0,0.1);border:1px solid rgba(255,204,0,0.3);border-radius:50px;padding:5px 14px;font-size:0.65rem;letter-spacing:2px;color:var(--gold);cursor:pointer;font-family:inherit;}
+.ab-btn:hover,.ab-btn.on{background:rgba(255,204,0,0.25);border-color:var(--gold);}
+#voice-status{font-size:0.55rem;letter-spacing:2px;color:var(--green);margin-left:auto;}
+
+/* ONBOARD */
+#onboard{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;}
+.ob-flag{font-size:4rem;margin-bottom:12px;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.ob-title{font-size:clamp(2.5rem,12vw,6rem);font-weight:900;line-height:0.95;background:linear-gradient(135deg,var(--gold),var(--red),var(--purple),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
+.ob-sub{font-size:0.55rem;letter-spacing:6px;color:#1a1a33;margin-bottom:24px;line-height:2.5;}
+.ob-declare{font-size:0.65rem;color:var(--txt2);line-height:2.5;max-width:480px;margin:0 auto 28px;}
+.ob-inp,.ob-sel{width:min(320px,88vw);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:50px;padding:14px 24px;color:var(--txt);font-size:0.75rem;letter-spacing:2px;outline:none;text-align:center;margin-bottom:10px;font-family:inherit;}
+.ob-inp:focus{border-color:var(--gold);}
+.ob-btn{padding:17px 56px;background:linear-gradient(135deg,var(--gold),var(--red));border:none;border-radius:50px;font-size:0.9rem;font-weight:900;letter-spacing:5px;cursor:pointer;color:#000;font-family:inherit;margin-top:10px;}
+.ob-access{margin-top:20px;font-size:0.5rem;letter-spacing:3px;color:#1a1a33;}
+.ob-access-btns{display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap;}
+
+/* NAV */
+nav{background:rgba(3,2,10,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);padding:12px 16px;display:flex;align-items:center;gap:10px;}
+.nav-logo{font-size:0.8rem;font-weight:900;letter-spacing:4px;background:linear-gradient(90deg,var(--gold),var(--red),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-sp{flex:1;}
+.nav-user{font-size:0.42rem;letter-spacing:3px;color:var(--txt2);background:var(--panel);padding:5px 14px;border-radius:50px;border:1px solid var(--border);}
+
+/* HERO */
+.hero{padding:32px 16px 20px;text-align:center;}
+.hero-title{font-size:clamp(1.5rem,7vw,3rem);font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,var(--gold),var(--red),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+.hero-sub{font-size:0.55rem;letter-spacing:4px;color:#1a1a33;margin-bottom:20px;}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 20px;}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 8px;text-align:center;}
+.stat-n{font-size:clamp(1rem,4vw,1.6rem);font-weight:900;background:linear-gradient(135deg,var(--gold),var(--red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-l{font-size:0.38rem;letter-spacing:3px;color:#1a1a33;margin-top:3px;}
+
+/* SECTION */
+.section-hd{font-size:0.46rem;letter-spacing:6px;color:#1a1a33;padding:14px 16px 8px;}
+
+/* WORLD CARDS */
+.world-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px;}
+.world-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:20px 16px;cursor:pointer;transition:border-color 0.2s,transform 0.2s;text-decoration:none;display:block;}
+.world-card:hover{border-color:rgba(255,255,255,0.15);transform:scale(1.02);}
+.wc-icon{font-size:2.2rem;margin-bottom:8px;}
+.wc-name{font-size:0.7rem;font-weight:900;color:var(--txt);letter-spacing:2px;margin-bottom:4px;}
+.wc-desc{font-size:0.48rem;color:var(--txt2);line-height:1.9;}
+.wc-tag{display:inline-block;font-size:0.38rem;letter-spacing:3px;padding:2px 10px;border-radius:50px;margin-top:8px;}
+
+/* ACCESS FEATURES */
+.access-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px;}
+.access-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px;text-align:center;}
+.ac-icon{font-size:2rem;margin-bottom:8px;}
+.ac-title{font-size:0.6rem;font-weight:700;color:var(--txt);margin-bottom:4px;}
+.ac-desc{font-size:0.45rem;color:var(--txt2);line-height:2;}
+.ac-btn{width:100%;margin-top:10px;padding:10px;background:rgba(255,204,0,0.08);border:1px solid rgba(255,204,0,0.2);border-radius:10px;font-size:0.5rem;letter-spacing:3px;color:var(--gold);cursor:pointer;font-family:inherit;}
+
+/* VOICE */
+#voice-panel{background:linear-gradient(135deg,rgba(0,255,170,0.06),rgba(34,85,255,0.06));border:1px solid rgba(0,255,170,0.15);border-radius:20px;padding:22px;margin:8px 16px;}
+.vp-title{font-size:0.52rem;letter-spacing:5px;color:var(--green);margin-bottom:8px;}
+.vp-body{font-size:0.58rem;color:var(--txt2);line-height:2.3;margin-bottom:14px;}
+.vp-cmds{display:flex;flex-wrap:wrap;gap:6px;}
+.vp-cmd{background:rgba(0,255,170,0.07);border:1px solid rgba(0,255,170,0.15);border-radius:50px;padding:5px 14px;font-size:0.45rem;letter-spacing:2px;color:var(--green);}
+.vp-btn{width:100%;margin-top:12px;padding:13px;background:linear-gradient(135deg,var(--green),var(--blue));border:none;border-radius:12px;font-size:0.65rem;font-weight:900;letter-spacing:4px;cursor:pointer;color:#000;font-family:inherit;}
+
+/* BOTTOM NAV */
+#bnav{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(3,2,10,0.97);border-top:1px solid var(--border);backdrop-filter:blur(20px);display:flex;justify-content:space-around;padding:10px 0 14px;}
+.bn{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 10px;border-radius:10px;}
+.bn.active,.bn:hover{background:rgba(255,204,0,0.07);}
+.bn-i{font-size:1.3rem;}
+.bn-l{font-size:0.35rem;letter-spacing:2px;color:#1a1a33;}
+.bn.active .bn-l{color:var(--gold);}
+
+#main{display:none;flex-direction:column;min-height:100vh;padding-bottom:90px;}
+
+/* TABS */
+#tab-home,#tab-access,#tab-voice,#tab-profile{display:none;}
+#tab-home{display:block;}
+
+/* PROFILE */
+.profile-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:28px;margin:8px 16px;text-align:center;}
+.pc-icon{font-size:3.5rem;margin-bottom:10px;}
+.pc-name{font-size:1.1rem;font-weight:900;letter-spacing:4px;color:var(--txt);}
+.pc-country{font-size:0.5rem;letter-spacing:3px;color:var(--gold);margin-top:4px;}
+.pc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px;}
+.pcs{text-align:center;}
+.pcs-n{font-size:1.1rem;font-weight:900;color:var(--gold);}
+.pcs-l{font-size:0.38rem;letter-spacing:3px;color:#1a1a33;}
+.prof-btn{display:block;width:100%;padding:13px;background:var(--panel);border:1px solid var(--border);border-radius:12px;font-size:0.55rem;letter-spacing:3px;color:var(--gold);cursor:pointer;margin-top:10px;font-family:inherit;text-align:center;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<!-- ONBOARD -->
+<div id="onboard" aria-label="Welcome to KidRising Platform">
+  <div class="ob-flag" aria-hidden="true">🌍</div>
+  <div class="ob-title">KidRising</div>
+  <div class="ob-sub">THE INTERNET · REBUILT FOR KIDS · ESPECIALLY THE ONES EVERYONE FORGETS</div>
+  <div class="ob-declare">Every game, every vote, every world — one place.<br>Built for every kid. Especially disabled kids.<br>Free forever.</div>
+  <input class="ob-inp" id="ob-name" type="text" placeholder="Your username" maxlength="16" aria-label="Enter your username">
+  <select class="ob-sel" id="ob-country" aria-label="Select your country">
+    <option value="">🌍 Your country</option>
+    <option>🇺🇸 United States</option><option>🇬🇧 United Kingdom</option><option>🇨🇦 Canada</option>
+    <option>🇦🇺 Australia</option><option>🇮🇳 India</option><option>🇧🇷 Brazil</option>
+    <option>🇲🇽 Mexico</option><option>🇫🇷 France</option><option>🇩🇪 Germany</option>
+    <option>🇯🇵 Japan</option><option>🇰🇷 South Korea</option><option>🇿🇦 South Africa</option>
+    <option>🇳🇬 Nigeria</option><option>🇪🇬 Egypt</option><option>🇦🇷 Argentina</option>
+    <option>🇮🇩 Indonesia</option><option>🇵🇭 Philippines</option><option>🇵🇰 Pakistan</option>
+    <option>🇰🇪 Kenya</option><option>🇬🇭 Ghana</option><option>🌍 Other</option>
+  </select>
+  <button class="ob-btn" onclick="joinPlatform()" aria-label="Join KidRising">🌍 ENTER THE PLATFORM</button>
+  <div class="ob-access">ACCESSIBILITY OPTIONS</div>
+  <div class="ob-access-btns">
+    <button class="ab-btn" onclick="toggleHC()" aria-label="High contrast mode">HIGH CONTRAST</button>
+    <button class="ab-btn" onclick="toggleLarge()" aria-label="Large text">LARGE TEXT</button>
+    <button class="ab-btn" onclick="toggleReduced()" aria-label="Reduce motion">CALM MODE</button>
+    <button class="ab-btn" onclick="readPage()" aria-label="Read this page aloud">🔊 READ ALOUD</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main" role="main">
+
+  <!-- ACCESS BAR — always visible -->
+  <div id="access-bar" role="toolbar" aria-label="Accessibility tools">
+    <span>♿</span>
+    <button class="ab-btn" id="hc-btn" onclick="toggleHC()" aria-label="Toggle high contrast">HIGH CONTRAST</button>
+    <button class="ab-btn" id="lg-btn" onclick="toggleLarge()" aria-label="Toggle large text">LARGE TEXT</button>
+    <button class="ab-btn" id="rd-btn" onclick="toggleReduced()" aria-label="Toggle calm mode">CALM MODE</button>
+    <button class="ab-btn" onclick="readPage()" aria-label="Read screen aloud">🔊 READ</button>
+    <button class="ab-btn" onclick="stopRead()" aria-label="Stop reading">⏹ STOP</button>
+    <div id="voice-status" aria-live="polite"></div>
+  </div>
+
+  <nav aria-label="Main navigation">
+    <div class="nav-logo">KIDRISING</div>
+    <div class="nav-sp"></div>
+    <div class="nav-user" id="nav-user" aria-label="Your username">-</div>
+  </nav>
+
+  <!-- TAB: HOME -->
+  <div id="tab-home" role="tabpanel" aria-label="Home">
+    <div class="hero">
+      <div class="hero-title">Your Universe</div>
+      <div class="hero-sub">EVERY WORLD. ONE PLATFORM. BUILT FOR YOU.</div>
+    </div>
+    <div class="stats" role="region" aria-label="Platform statistics">
+      <div class="stat"><div class="stat-n" id="st-kids">0</div><div class="stat-l">KIDS</div></div>
+      <div class="stat"><div class="stat-n" id="st-worlds">7</div><div class="stat-l">WORLDS</div></div>
+      <div class="stat"><div class="stat-n" id="st-countries">0</div><div class="stat-l">COUNTRIES</div></div>
+    </div>
+
+    <div class="section-hd" aria-label="Enter a world">🌍 ENTER A WORLD</div>
+    <div class="world-grid" role="list">
+
+      <a class="world-card" href="https://oliveryvo-cmd.github.io/kidverse/" target="_blank" role="listitem" aria-label="KidRising Civilization - The original civilization platform">
+        <div class="wc-icon" aria-hidden="true">⚡</div>
+        <div class="wc-name">KIDRISING</div>
+        <div class="wc-desc">The original civilization. Vote, post, earn badges, join the movement.</div>
+        <span class="wc-tag" style="background:rgba(255,204,0,0.1);color:#ffcc00;">CIVILIZATION</span>
+      </a>
+
+      <a class="world-card" href="https://oliveryvo-cmd.github.io/krnetwork/" target="_blank" role="listitem" aria-label="KidRising Network - Social network for kids">
+        <div class="wc-icon" aria-hidden="true">📡</div>
+        <div class="wc-name">NETWORK</div>
+        <div class="wc-desc">Post, connect, and talk to kids from 195 countries.</div>
+        <span class="wc-tag" style="background:rgba(0,255,170,0.1);color:#00ffaa;">SOCIAL</span>
+      </a>
+
+      <a class="world-card" href="https://oliveryvo-cmd.github.io/krparliament/" target="_blank" role="listitem" aria-label="KidRising Parliament - Vote on real world issues">
+        <div class="wc-icon" aria-hidden="true">🏛️</div>
+        <div class="wc-name">PARLIAMENT</div>
+        <div class="wc-desc">Vote on real issues. Send the results to world leaders.</div>
+        <span class="wc-tag" style="background:rgba(255,34,68,0.1);color:#ff2244;">GOVERNMENT</span>
+      </a>
+
+      <a class="world-card" href="https://oliveryvo-cmd.github.io/kidcountry/" target="_blank" role="listitem" aria-label="KidRising Nation - Become a citizen of the first kid country">
+        <div class="wc-icon" aria-hidden="true">🌍</div>
+        <div class="wc-name">NATION</div>
+        <div class="wc-desc">Become a citizen. Get your passport. Add laws to the Constitution.</div>
+        <span class="wc-tag" style="background:rgba(187,51,255,0.1);color:#bb33ff;">COUNTRY</span>
+      </a>
+
+      <a class="world-card" href="https://oliveryvo-cmd.github.io/fluffland/" target="_blank" role="listitem" aria-label="FluffLand - Cozy 3D world game">
+        <div class="wc-icon" aria-hidden="true">🌸</div>
+        <div class="wc-name">FLUFFLAND</div>
+        <div class="wc-desc">Explore a cozy 3D world. Meet plushie friends. Collect sparkles.</div>
+        <span class="wc-tag" style="background:rgba(255,150,200,0.1);color:#ff96c8;">COZY GAME</span>
+      </a>
+
+      <a class="world-card" href="https://oliveryvo-cmd.github.io/hyperblast/" target="_blank" role="listitem" aria-label="HYPERBLAST ULTRA - Epic arcade shooter">
+        <div class="wc-icon" aria-hidden="true">🔥</div>
+        <div class="wc-name">HYPERBLAST</div>
+        <div class="wc-desc">The most insane arcade shooter ever. Waves, bosses, combos, chaos.</div>
+        <span class="wc-tag" style="background:rgba(255,68,68,0.1);color:#ff4444;">ACTION GAME</span>
+      </a>
+
+      <a class="world-card" href="https://oliveryvo-cmd.github.io/kidos/" target="_blank" role="listitem" aria-label="KidOS - Operating system for kids">
+        <div class="wc-icon" aria-hidden="true">💻</div>
+        <div class="wc-name">KID OS</div>
+        <div class="wc-desc">A full operating system in your browser. Paint, notes, music, camera.</div>
+        <span class="wc-tag" style="background:rgba(34,85,255,0.1);color:#2255ff;">OPERATING SYSTEM</span>
+      </a>
+
+      <a class="world-card" href="https://oliveryvo-cmd.github.io/epicworld/" target="_blank" role="listitem" aria-label="EpicWorld - 3D first person shooter">
+        <div class="wc-icon" aria-hidden="true">🎮</div>
+        <div class="wc-name">EPICWORLD</div>
+        <div class="wc-desc">3D first-person shooter. Fight AI bots. Compete for the top score.</div>
+        <span class="wc-tag" style="background:rgba(255,136,0,0.1);color:#ff8800;">FPS GAME</span>
+      </a>
+
+    </div>
+
+    <div class="section-hd" style="margin-top:12px;">🏛️ BUILT BY</div>
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:20px;margin:0 16px;text-align:center;">
+      <div style="font-size:0.55rem;letter-spacing:4px;color:var(--gold);margin-bottom:6px;">PUFFBLAZE WORLD STUDIOS</div>
+      <div style="font-size:0.7rem;color:var(--txt2);line-height:2.3;">Founded by Oliver, age 10.<br>Building worlds for every kid on earth —<br><strong style="color:var(--txt);">especially the ones the world forgot.</strong></div>
+    </div>
+  </div>
+
+  <!-- TAB: ACCESSIBILITY -->
+  <div id="tab-access" role="tabpanel" aria-label="Accessibility features">
+    <div class="hero">
+      <div class="hero-title">Built For You</div>
+      <div class="hero-sub">EVERY KID. EVERY ABILITY. ZERO EXCUSES.</div>
+    </div>
+    <div style="background:linear-gradient(135deg,rgba(0,255,170,0.06),rgba(34,85,255,0.06));border:1px solid rgba(0,255,170,0.15);border-radius:20px;padding:22px;margin:0 16px 12px;">
+      <div style="font-size:0.52rem;letter-spacing:5px;color:var(--green);margin-bottom:8px;">WHY THIS EXISTS</div>
+      <div style="font-size:0.62rem;color:var(--txt2);line-height:2.5;">KidRising was built by a kid with Tourette syndrome.<br>He knows what it feels like when the world wasn't built for you.<br><strong style="color:var(--txt);">So he built it the other way around.</strong><br>Every feature here was designed for the kids who need it most first.</div>
+    </div>
+    <div class="access-grid" role="list">
+      <div class="access-card" role="listitem">
+        <div class="ac-icon" aria-hidden="true">👁️</div>
+        <div class="ac-title">HIGH CONTRAST</div>
+        <div class="ac-desc">Yellow on black. Maximum visibility for low vision.</div>
+        <button class="ac-btn" id="hc-card-btn" onclick="toggleHC()" aria-label="Toggle high contrast mode">TURN ON</button>
+      </div>
+      <div class="access-card" role="listitem">
+        <div class="ac-icon" aria-hidden="true">🔤</div>
+        <div class="ac-title">LARGE TEXT</div>
+        <div class="ac-desc">Bigger text across the whole platform.</div>
+        <button class="ac-btn" onclick="toggleLarge()" aria-label="Toggle large text">MAKE BIGGER</button>
+      </div>
+      <div class="access-card" role="listitem">
+        <div class="ac-icon" aria-hidden="true">🌊</div>
+        <div class="ac-title">CALM MODE</div>
+        <div class="ac-desc">Removes all animations. Great for sensory sensitivities.</div>
+        <button class="ac-btn" onclick="toggleReduced()" aria-label="Toggle calm mode">CALM IT DOWN</button>
+      </div>
+      <div class="access-card" role="listitem">
+        <div class="ac-icon" aria-hidden="true">🔊</div>
+        <div class="ac-title">READ ALOUD</div>
+        <div class="ac-desc">The whole screen reads itself out loud. No reading needed.</div>
+        <button class="ac-btn" onclick="readPage()" aria-label="Read screen aloud">READ TO ME</button>
+      </div>
+      <div class="access-card" role="listitem">
+        <div class="ac-icon" aria-hidden="true">🎙️</div>
+        <div class="ac-title">VOICE CONTROL</div>
+        <div class="ac-desc">Say commands out loud to navigate KidRising hands-free.</div>
+        <button class="ac-btn" onclick="showTab('voice')" aria-label="Go to voice control">SET UP</button>
+      </div>
+      <div class="access-card" role="listitem">
+        <div class="ac-icon" aria-hidden="true">⌨️</div>
+        <div class="ac-title">KEYBOARD ONLY</div>
+        <div class="ac-desc">Everything works with just a keyboard. Tab to navigate.</div>
+        <button class="ac-btn" onclick="alert('Every button on KidRising works with Tab + Enter. No mouse needed.')" aria-label="Learn about keyboard navigation">HOW TO USE</button>
+      </div>
+    </div>
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:20px;margin:12px 16px;text-align:center;">
+      <div style="font-size:0.52rem;letter-spacing:4px;color:var(--gold);margin-bottom:8px;">NEED SOMETHING ELSE?</div>
+      <div style="font-size:0.58rem;color:var(--txt2);line-height:2.3;">If KidRising doesn't work for you the way you need it to, that's our problem — not yours. Every kid deserves access. Tell us what you need.</div>
+    </div>
+  </div>
+
+  <!-- TAB: VOICE -->
+  <div id="tab-voice" role="tabpanel" aria-label="Voice control">
+    <div class="hero">
+      <div class="hero-title">Voice Control</div>
+      <div class="hero-sub">TALK TO KIDRISING. IT LISTENS.</div>
+    </div>
+    <div id="voice-panel">
+      <div class="vp-title">🎙️ HOW VOICE CONTROL WORKS</div>
+      <div class="vp-body">Press the button below and speak a command. KidRising will do it for you — no hands, no typing, no reading needed.</div>
+      <div class="vp-cmds" aria-label="Available voice commands">
+        <span class="vp-cmd">"go home"</span>
+        <span class="vp-cmd">"open network"</span>
+        <span class="vp-cmd">"open parliament"</span>
+        <span class="vp-cmd">"open nation"</span>
+        <span class="vp-cmd">"open fluffland"</span>
+        <span class="vp-cmd">"open hyperblast"</span>
+        <span class="vp-cmd">"open kidos"</span>
+        <span class="vp-cmd">"read the screen"</span>
+        <span class="vp-cmd">"high contrast"</span>
+        <span class="vp-cmd">"large text"</span>
+        <span class="vp-cmd">"calm mode"</span>
+        <span class="vp-cmd">"stop reading"</span>
+      </div>
+      <button class="vp-btn" onclick="startVoice()" aria-label="Start voice control">🎙️ START LISTENING</button>
+    </div>
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:20px;margin:8px 16px;">
+      <div style="font-size:0.52rem;letter-spacing:4px;color:var(--gold);margin-bottom:8px;">WHY VOICE CONTROL?</div>
+      <div style="font-size:0.58rem;color:var(--txt2);line-height:2.3;">Some kids can't use a mouse or keyboard. Some kids have limited movement. Some kids just find it easier to talk. KidRising works however you need it to work.</div>
+    </div>
+  </div>
+
+  <!-- TAB: PROFILE -->
+  <div id="tab-profile" role="tabpanel" aria-label="Your profile">
+    <div class="hero">
+      <div class="hero-title">Your Profile</div>
+      <div class="hero-sub">CITIZEN OF KIDRISING NATION</div>
+    </div>
+    <div class="profile-card">
+      <div class="pc-icon" id="pc-icon" aria-hidden="true">⚡</div>
+      <div class="pc-name" id="pc-name">-</div>
+      <div class="pc-country" id="pc-country">-</div>
+      <div class="pc-stats">
+        <div class="pcs"><div class="pcs-n" id="pcs-worlds">7</div><div class="pcs-l">WORLDS</div></div>
+        <div class="pcs"><div class="pcs-n">∞</div><div class="pcs-l">ACCESS</div></div>
+        <div class="pcs"><div class="pcs-n" id="pcs-member">FOUNDING</div><div class="pcs-l">MEMBER</div></div>
+      </div>
+      <a class="prof-btn" href="https://oliveryvo-cmd.github.io/kidcountry/" target="_blank" aria-label="View your KidRising passport">📘 VIEW MY PASSPORT</a>
+      <button class="prof-btn" onclick="shareKidRising()" aria-label="Share KidRising with friends">🌍 INVITE A KID TO JOIN</button>
+      <button class="prof-btn" onclick="if(confirm('Log out?')){localStorage.removeItem('krp_user');location.reload();}" aria-label="Log out" style="color:var(--txt2);">LOG OUT</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div id="bnav" role="navigation" aria-label="Bottom navigation">
+    <div class="bn active" onclick="showTab('home',this)" role="tab" aria-label="Home" tabindex="0">
+      <div class="bn-i" aria-hidden="true">🌍</div><div class="bn-l">HOME</div>
+    </div>
+    <div class="bn" onclick="showTab('access',this)" role="tab" aria-label="Accessibility" tabindex="0">
+      <div class="bn-i" aria-hidden="true">♿</div><div class="bn-l">ACCESS</div>
+    </div>
+    <div class="bn" onclick="showTab('voice',this)" role="tab" aria-label="Voice control" tabindex="0">
+      <div class="bn-i" aria-hidden="true">🎙️</div><div class="bn-l">VOICE</div>
+    </div>
+    <div class="bn" onclick="showTab('profile',this)" role="tab" aria-label="Your profile" tabindex="0">
+      <div class="bn-i" aria-hidden="true">👤</div><div class="bn-l">PROFILE</div>
+    </div>
+  </div>
+
+</div><!-- end main -->
+
+<script>
+// ── ACCESSIBILITY ──
+let hcOn=false,lgOn=false,rdOn=false;
+function toggleHC(){
+  hcOn=!hcOn;
+  document.body.classList.toggle('hc',hcOn);
+  document.querySelectorAll('#hc-btn,#hc-card-btn').forEach(b=>b.classList.toggle('on',hcOn));
+  localStorage.setItem('krp_hc',hcOn);
+  speak(hcOn?'High contrast on':'High contrast off');
+}
+function toggleLarge(){
+  lgOn=!lgOn;
+  document.body.classList.toggle('large',lgOn);
+  document.getElementById('lg-btn').classList.toggle('on',lgOn);
+  localStorage.setItem('krp_lg',lgOn);
+  speak(lgOn?'Large text on':'Large text off');
+}
+function toggleReduced(){
+  rdOn=!rdOn;
+  document.body.classList.toggle('reduced',rdOn);
+  document.getElementById('rd-btn').classList.toggle('on',rdOn);
+  localStorage.setItem('krp_rd',rdOn);
+  speak(rdOn?'Calm mode on':'Calm mode off');
+}
+function readPage(){
+  const visible=document.querySelector('#tab-home:not([style*="none"]),#tab-access:not([style*="none"]),#tab-voice:not([style*="none"]),#tab-profile:not([style*="none"])');
+  const text=visible?visible.innerText:'KidRising Platform. The internet rebuilt for kids.';
+  speak(text);
+}
+function stopRead(){window.speechSynthesis&&speechSynthesis.cancel();}
+function speak(text){
+  if(!window.speechSynthesis)return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.rate=0.9;u.pitch=1.1;
+  speechSynthesis.speak(u);
+}
+
+// ── VOICE CONTROL ──
+let voiceActive=false;
+function startVoice(){
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){
+    alert('Voice control works in Chrome and Edge. Try one of those browsers!');return;
+  }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const rec=new SR();
+  rec.continuous=true;rec.interimResults=false;rec.lang='en-US';
+  rec.onresult=e=>{
+    const cmd=e.results[e.results.length-1][0].transcript.toLowerCase().trim();
+    document.getElementById('voice-status').textContent='🎙️ "'+cmd+'"';
+    handleVoiceCmd(cmd);
+  };
+  rec.onerror=()=>{document.getElementById('voice-status').textContent='';};
+  rec.start();voiceActive=true;
+  document.getElementById('voice-status').textContent='🎙️ LISTENING...';
+  speak('Voice control active. Say a command.');
+}
+function handleVoiceCmd(cmd){
+  if(cmd.includes('home')){showTab('home');speak('Going home.');}
+  else if(cmd.includes('network')){window.open('https://oliveryvo-cmd.github.io/krnetwork/','_blank');speak('Opening Network.');}
+  else if(cmd.includes('parliament')){window.open('https://oliveryvo-cmd.github.io/krparliament/','_blank');speak('Opening Parliament.');}
+  else if(cmd.includes('nation')){window.open('https://oliveryvo-cmd.github.io/kidcountry/','_blank');speak('Opening Nation.');}
+  else if(cmd.includes('fluffland')){window.open('https://oliveryvo-cmd.github.io/fluffland/','_blank');speak('Opening FluffLand.');}
+  else if(cmd.includes('hyperblast')){window.open('https://oliveryvo-cmd.github.io/hyperblast/','_blank');speak('Opening HYPERBLAST ULTRA.');}
+  else if(cmd.includes('kidos')){window.open('https://oliveryvo-cmd.github.io/kidos/','_blank');speak('Opening KidOS.');}
+  else if(cmd.includes('read')){readPage();}
+  else if(cmd.includes('stop')){stopRead();document.getElementById('voice-status').textContent='';}
+  else if(cmd.includes('high contrast')){toggleHC();}
+  else if(cmd.includes('large text')||cmd.includes('bigger')){toggleLarge();}
+  else if(cmd.includes('calm')){toggleReduced();}
+  else if(cmd.includes('access')){showTab('access');speak('Accessibility settings.');}
+  else if(cmd.includes('profile')){showTab('profile');speak('Your profile.');}
+  else speak("I didn't catch that. Try again.");
+}
+
+// ── JOIN ──
+const ICONS=['⚡','👑','🌍','🔥','🌸','🚀','💛','🌈','🎮','🏆'];
+function joinPlatform(){
+  const n=document.getElementById('ob-name').value.trim();
+  const c=document.getElementById('ob-country').value;
+  if(!n||!c){speak('Please enter your username and country.');alert('Please enter your username and country!');return;}
+  const name=n.toUpperCase().slice(0,14);
+  const icon=ICONS[Math.floor(Math.random()*ICONS.length)];
+  localStorage.setItem('krp_user',JSON.stringify({name,country:c,icon}));
+  document.getElementById('onboard').style.display='none';
+  document.getElementById('main').style.display='flex';
+  initMain(name,c,icon);
+  speak('Welcome to KidRising, '+name+'! You have entered the platform.');
+}
+
+function initMain(name,country,icon){
+  document.getElementById('nav-user').textContent=icon+' '+name;
+  document.getElementById('pc-name').textContent=name;
+  document.getElementById('pc-country').textContent=country;
+  document.getElementById('pc-icon').textContent=icon;
+  let k=parseInt(localStorage.getItem('krp_total')||'0')+1;
+  localStorage.setItem('krp_total',k);
+  document.getElementById('st-kids').textContent=k.toLocaleString();
+  document.getElementById('st-countries').textContent=Math.min(k,195);
+  // restore accessibility prefs
+  if(localStorage.getItem('krp_hc')==='true')toggleHC();
+  if(localStorage.getItem('krp_lg')==='true')toggleLarge();
+  if(localStorage.getItem('krp_rd')==='true')toggleReduced();
+}
+
+function shareKidRising(){
+  const url='https://oliveryvo-cmd.github.io/kidrising-platform/';
+  const txt='I just joined KidRising — the internet rebuilt for kids! Every world, every game, built for EVERY kid including disabled kids. Join here: '+url;
+  navigator.clipboard.writeText(txt).then(()=>{alert('Copied! Send it to every kid you know 🌍');speak('Copied to clipboard.');});
+}
+
+function showTab(tab,bnEl){
+  ['home','access','voice','profile'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('.bn').forEach(b=>b.classList.remove('active'));
+  if(bnEl)bnEl.classList.add('active');
+  speak('You are now on the '+tab+' page.');
+}
+
+// keyboard nav for bottom nav
+document.querySelectorAll('.bn').forEach(bn=>{
+  bn.addEventListener('keydown',e=>{if(e.key==='Enter')bn.click();});
+});
+
+// load saved user
+const saved=JSON.parse(localStorage.getItem('krp_user')||'null');
+if(saved){
+  document.getElementById('onboard').style.display='none';
+  document.getElementById('main').style.display='flex';
+  initMain(saved.name,saved.country,saved.icon||'⚡');
+}
+</script>
+</body>
+</html>
